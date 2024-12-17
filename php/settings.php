@@ -28,13 +28,14 @@ $settingsCategories = [
             'type' => 'select',
             'label' => 'العملة الرئيسية',
             'options' => [
-                'SAR' => 'ريال سعودي',
+                'EGP' => 'جنيه مصري',
                 'USD' => 'دولار أمريكي',
                 'EUR' => 'يورو',
                 'GBP' => 'جنيه إسترليني',
+                'SAR' => 'ريال سعودي',
                 'AED' => 'درهم إماراتي'
             ],
-            'default' => 'SAR'
+            'default' => 'EGP'
         ]
     ],
     'accounting' => [
