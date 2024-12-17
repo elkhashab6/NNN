@@ -1,0 +1,14 @@
+# IDE files
+.vscode/
+.idea/
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Local data files
+data/*.json
