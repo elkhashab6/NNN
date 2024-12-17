@@ -291,12 +291,13 @@ const settings = {
 };
 
 function formatCurrency(value) {
-    return new Intl.NumberFormat('ar-EG', {
-        style: 'currency',
-        currency: 'EGP',
+    const formattedValue = new Intl.NumberFormat('ar-EG', {
+        style: 'decimal',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(value);
+    
+    return formattedValue + ' ج.م';
 }
 
 function initializeAccounts() {
