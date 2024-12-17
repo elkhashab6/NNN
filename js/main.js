@@ -45,6 +45,24 @@ function loadPageContent(pageId) {
         case 'accounts':
             initializeAccounts();
             break;
+        case 'financial':
+            initializeFinancial();
+            break;
+        case 'payroll':
+            initializePayroll();
+            break;
+        case 'assets':
+            initializeAssets();
+            break;
+        case 'budget':
+            initializeBudget();
+            break;
+        case 'costs':
+            initializeCosts();
+            break;
+        case 'debts':
+            initializeDebts();
+            break;
         case 'settings':
             initializeSettings();
             break;
@@ -52,38 +70,72 @@ function loadPageContent(pageId) {
 }
 
 function initializeComponents() {
-    // Initialize tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+    // Initialize all global components and event listeners
+    initializeCharts();
+    initializeCustomers();
+    initializeSuppliers();
+    initializeInventory();
+    initializeAccounts();
+    initializeFinancial();
+    initializePayroll();
+    initializeAssets();
+    initializeBudget();
+    initializeCosts();
+    initializeDebts();
+    initializeSettings();
     
-    // Initialize popovers
-    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl);
-    });
+    // Setup event listeners for navigation
+    setupNavigationListeners();
 }
 
 function initializeDashboard() {
     const dashboard = document.getElementById('dashboard');
     dashboard.innerHTML = `
-        <h2>لوحة التحكم</h2>
-        <hr>
-        <div class="row">
-            <!-- Statistics Cards -->
-            <div class="col-md-3 mb-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h2>لوحة التحكم</h2>
+                <hr>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
                 <div class="card stats-card">
                     <div class="card-body">
-                        <h5 class="card-title">إجمالي المبيعات</h5>
-                        <h3 class="card-text" id="totalSales">0</h3>
+                        <h5 class="card-title">المبيعات اليومية</h5>
+                        <h3 class="mb-0" id="dailySales">0</h3>
                     </div>
                 </div>
             </div>
-            <!-- Add more statistics cards -->
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">المخزون</h5>
+                        <h3 class="mb-0" id="totalInventory">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">العملاء</h5>
+                        <h3 class="mb-0" id="totalCustomers">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">الموردين</h5>
+                        <h3 class="mb-0" id="totalSuppliers">0</h3>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Charts -->
         <div class="row">
-            <!-- Charts -->
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-body">
@@ -92,10 +144,38 @@ function initializeDashboard() {
                     </div>
                 </div>
             </div>
-            <!-- Add more charts -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">توزيع المنتجات</h5>
+                        <canvas id="productsChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
-    
-    // Initialize dashboard charts
-    initializeCharts();
+
+    // Update dashboard data
+    updateDashboardStats();
+}
+
+function setupNavigationListeners() {
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageId = link.getAttribute('href').substring(1);
+            showPage(pageId);
+        });
+    });
+}
+
+function updateDashboardStats() {
+    // Update quick stats
+    document.getElementById('dailySales').textContent = utils.formatCurrency(Math.random() * 10000);
+    document.getElementById('totalInventory').textContent = Math.floor(Math.random() * 1000);
+    document.getElementById('totalCustomers').textContent = Math.floor(Math.random() * 100);
+    document.getElementById('totalSuppliers').textContent = Math.floor(Math.random() * 50);
+
+    // Update charts
+    updateCharts();
 }
