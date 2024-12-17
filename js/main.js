@@ -166,7 +166,7 @@ function initializeDashboard() {
                                         <small class="text-muted">عميل: أحمد محمد</small>
                                     </div>
                                     <div class="text-end">
-                                        <h6 class="mb-0">1,500 ريال</h6>
+                                        <h6 class="mb-0">١,٥٠٠ ج.م</h6>
                                         <small class="text-muted">اليوم</small>
                                     </div>
                                 </div>
@@ -178,7 +178,7 @@ function initializeDashboard() {
                                         <small class="text-muted">عميل: محمد علي</small>
                                     </div>
                                     <div class="text-end">
-                                        <h6 class="mb-0">2,300 ريال</h6>
+                                        <h6 class="mb-0">٢,٣٠٠ ج.م</h6>
                                         <small class="text-muted">أمس</small>
                                     </div>
                                 </div>
@@ -201,7 +201,7 @@ function initializeDashboard() {
                                         <small class="text-muted">الكمية: 5</small>
                                     </div>
                                     <div class="text-end">
-                                        <h6 class="mb-0">15,000 ريال</h6>
+                                        <h6 class="mb-0">١٥,٠٠٠ ج.م</h6>
                                         <small class="text-success">↑ 15%</small>
                                     </div>
                                 </div>
@@ -213,7 +213,7 @@ function initializeDashboard() {
                                         <small class="text-muted">الكمية: 3</small>
                                     </div>
                                     <div class="text-end">
-                                        <h6 class="mb-0">4,500 ريال</h6>
+                                        <h6 class="mb-0">٤,٥٠٠ ج.م</h6>
                                         <small class="text-danger">↓ 5%</small>
                                     </div>
                                 </div>

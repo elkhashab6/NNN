@@ -26,7 +26,7 @@ const CONFIG = {
         COMPANY_EMAIL: 'البريد الإلكتروني',
         COMPANY_WEBSITE: 'الموقع الإلكتروني',
         COMPANY_VAT: 'الرقم الضريبي',
-        CURRENCY: 'ريال',
+        CURRENCY: 'جنيه مصري',
         LANGUAGE: 'ar',
         THEME: 'light',
         DECIMAL_PLACES: 2,
