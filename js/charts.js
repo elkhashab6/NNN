@@ -1,27 +1,16 @@
-// Charts initialization and management
+// Charts initialization and updates
 function initializeCharts() {
-    initializeSalesChart();
-    initializeInventoryChart();
-    initializeCustomerChart();
-}
-
-function initializeSalesChart() {
-    const ctx = document.getElementById('salesChart')?.getContext('2d');
-    if (!ctx) return;
-
-    const salesData = generateSampleData();
-    
-    new Chart(ctx, {
+    // Sales Chart
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(salesCtx, {
         type: 'line',
         data: {
-            labels: salesData.labels,
+            labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
             datasets: [{
-                label: 'المبيعات الشهرية',
-                data: salesData.values,
-                borderColor: '#2980b9',
-                backgroundColor: 'rgba(41, 128, 185, 0.1)',
-                tension: 0.4,
-                fill: true
+                label: 'المبيعات',
+                data: [12000, 19000, 15000, 25000, 22000, 30000],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
             }]
         },
         options: {
@@ -29,44 +18,24 @@ function initializeSalesChart() {
             plugins: {
                 legend: {
                     position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'تحليل المبيعات'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
                 }
             }
         }
     });
-}
 
-function initializeInventoryChart() {
-    const ctx = document.getElementById('inventoryChart')?.getContext('2d');
-    if (!ctx) return;
-
-    const inventory = utils.getFromStorage(CONFIG.STORAGE_KEYS.INVENTORY) || [];
-    const categories = [...new Set(inventory.map(item => item.category))];
-    const quantities = categories.map(category => 
-        inventory.filter(item => item.category === category)
-            .reduce((sum, item) => sum + item.quantity, 0)
-    );
-
-    new Chart(ctx, {
+    // Products Chart
+    const productsCtx = document.getElementById('productsChart').getContext('2d');
+    const productsChart = new Chart(productsCtx, {
         type: 'doughnut',
         data: {
-            labels: categories,
+            labels: ['إلكترونيات', 'أثاث', 'ملابس', 'أخرى'],
             datasets: [{
-                data: quantities,
+                data: [30, 25, 20, 25],
                 backgroundColor: [
-                    '#2ecc71',
-                    '#3498db',
-                    '#9b59b6',
-                    '#f1c40f',
-                    '#e74c3c'
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)'
                 ]
             }]
         },
@@ -74,80 +43,23 @@ function initializeInventoryChart() {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'right',
-                },
-                title: {
-                    display: true,
-                    text: 'توزيع المخزون'
-                }
-            }
-        }
-    });
-}
-
-function initializeCustomerChart() {
-    const ctx = document.getElementById('customerChart')?.getContext('2d');
-    if (!ctx) return;
-
-    const customerData = generateCustomerData();
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: customerData.labels,
-            datasets: [{
-                label: 'عدد العملاء',
-                data: customerData.values,
-                backgroundColor: '#3498db'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
                     position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'تحليل العملاء'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
                 }
             }
         }
     });
 }
 
-function generateSampleData() {
-    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
-                   'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-    const values = months.map(() => Math.floor(Math.random() * 50000) + 10000);
+// Function to update charts with new data
+function updateCharts(salesData, productsData) {
+    // Update charts with real data when available
+    if (salesData) {
+        salesChart.data = salesData;
+        salesChart.update();
+    }
     
-    return {
-        labels: months,
-        values: values
-    };
-}
-
-function generateCustomerData() {
-    const categories = ['جدد', 'نشطون', 'متكررون', 'غير نشطين'];
-    const values = categories.map(() => Math.floor(Math.random() * 50) + 10);
-    
-    return {
-        labels: categories,
-        values: values
-    };
-}
-
-function updateCharts() {
-    // Remove existing charts
-    Chart.helpers.each(Chart.instances, (instance) => {
-        instance.destroy();
-    });
-    
-    // Reinitialize charts with new data
-    initializeCharts();
+    if (productsData) {
+        productsChart.data = productsData;
+        productsChart.update();
+    }
 }

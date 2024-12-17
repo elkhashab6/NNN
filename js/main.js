@@ -28,6 +28,10 @@ function showPage(pageId) {
 
 function loadPageContent(pageId) {
     const page = document.getElementById(pageId);
+    if (!page) return;
+
+    // Add loading indicator
+    page.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
     
     switch(pageId) {
         case 'dashboard':
@@ -39,8 +43,11 @@ function loadPageContent(pageId) {
         case 'inventory':
             initializeInventory();
             break;
-        case 'reports':
-            initializeReports();
+        case 'customers':
+            initializeCustomers();
+            break;
+        case 'suppliers':
+            initializeSuppliers();
             break;
         case 'accounts':
             initializeAccounts();
@@ -63,6 +70,9 @@ function loadPageContent(pageId) {
         case 'debts':
             initializeDebts();
             break;
+        case 'reports':
+            initializeReports();
+            break;
         case 'settings':
             initializeSettings();
             break;
@@ -71,20 +81,6 @@ function loadPageContent(pageId) {
 
 function initializeComponents() {
     // Initialize all global components and event listeners
-    initializeCharts();
-    initializeCustomers();
-    initializeSuppliers();
-    initializeInventory();
-    initializeAccounts();
-    initializeFinancial();
-    initializePayroll();
-    initializeAssets();
-    initializeBudget();
-    initializeCosts();
-    initializeDebts();
-    initializeSettings();
-    
-    // Setup event listeners for navigation
     setupNavigationListeners();
 }
 
@@ -153,10 +149,85 @@ function initializeDashboard() {
                 </div>
             </div>
         </div>
+
+        <!-- Recent Activities -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">آخر الفواتير</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush" id="recentInvoices">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">فاتورة #1001</h6>
+                                        <small class="text-muted">عميل: أحمد محمد</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0">1,500 ريال</h6>
+                                        <small class="text-muted">اليوم</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">فاتورة #1000</h6>
+                                        <small class="text-muted">عميل: محمد علي</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0">2,300 ريال</h6>
+                                        <small class="text-muted">أمس</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">المنتجات الأكثر مبيعاً</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush" id="topProducts">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">لابتوب HP</h6>
+                                        <small class="text-muted">الكمية: 5</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0">15,000 ريال</h6>
+                                        <small class="text-success">↑ 15%</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">طابعة Canon</h6>
+                                        <small class="text-muted">الكمية: 3</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-0">4,500 ريال</h6>
+                                        <small class="text-danger">↓ 5%</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     `;
 
     // Update dashboard data
     updateDashboardStats();
+    initializeCharts();
 }
 
 function setupNavigationListeners() {
@@ -175,7 +246,16 @@ function updateDashboardStats() {
     document.getElementById('totalInventory').textContent = Math.floor(Math.random() * 1000);
     document.getElementById('totalCustomers').textContent = Math.floor(Math.random() * 100);
     document.getElementById('totalSuppliers').textContent = Math.floor(Math.random() * 50);
-
-    // Update charts
-    updateCharts();
 }
+
+// Initialize when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Show dashboard by default
+    showPage('dashboard');
+
+    // Setup hash change listener
+    window.addEventListener('hashchange', function() {
+        const pageId = window.location.hash.substring(1) || 'dashboard';
+        showPage(pageId);
+    });
+});

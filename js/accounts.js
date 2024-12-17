@@ -9,260 +9,385 @@ const ACCOUNT_TYPES = {
 
 function initializeAccounts() {
     const accountsPage = document.getElementById('accounts');
-    if (!accountsPage) return;
+    accountsPage.innerHTML = `
+        <div class="row mb-4">
+            <div class="col">
+                <h2>شجرة الحسابات</h2>
+                <hr>
+            </div>
+        </div>
 
-    // Load saved accounts or initialize with default structure
-    let accounts = utils.getFromStorage(CONFIG.STORAGE_KEYS.ACCOUNTS) || createDefaultAccountStructure();
-    displayAccountsTree(accounts);
-    setupAccountListeners();
-}
-
-function createDefaultAccountStructure() {
-    return {
-        assets: {
-            name: 'الأصول',
-            code: '1',
-            type: ACCOUNT_TYPES.ASSETS,
-            balance: 0,
-            children: {
-                currentAssets: {
-                    name: 'أصول متداولة',
-                    code: '11',
-                    balance: 0,
-                    children: {
-                        cash: {
-                            name: 'النقدية',
-                            code: '111',
-                            balance: 0,
-                            children: {}
-                        },
-                        inventory: {
-                            name: 'المخزون',
-                            code: '112',
-                            balance: 0,
-                            children: {}
-                        }
-                    }
-                },
-                fixedAssets: {
-                    name: 'أصول ثابتة',
-                    code: '12',
-                    balance: 0,
-                    children: {}
-                }
-            }
-        },
-        liabilities: {
-            name: 'الخصوم',
-            code: '2',
-            type: ACCOUNT_TYPES.LIABILITIES,
-            balance: 0,
-            children: {
-                currentLiabilities: {
-                    name: 'خصوم متداولة',
-                    code: '21',
-                    balance: 0,
-                    children: {
-                        accountsPayable: {
-                            name: 'موردون',
-                            code: '211',
-                            balance: 0,
-                            children: {}
-                        }
-                    }
-                }
-            }
-        },
-        expenses: {
-            name: 'المصروفات',
-            code: '3',
-            type: ACCOUNT_TYPES.EXPENSES,
-            balance: 0,
-            children: {}
-        },
-        revenues: {
-            name: 'الإيرادات',
-            code: '4',
-            type: ACCOUNT_TYPES.REVENUES,
-            balance: 0,
-            children: {
-                sales: {
-                    name: 'المبيعات',
-                    code: '41',
-                    balance: 0,
-                    children: {}
-                }
-            }
-        },
-        equity: {
-            name: 'حقوق الملكية',
-            code: '5',
-            type: ACCOUNT_TYPES.EQUITY,
-            balance: 0,
-            children: {
-                capital: {
-                    name: 'رأس المال',
-                    code: '51',
-                    balance: 0,
-                    children: {}
-                }
-            }
-        }
-    };
-}
-
-function displayAccountsTree(accounts) {
-    const accountsContainer = document.getElementById('accountsTree');
-    if (!accountsContainer) return;
-
-    accountsContainer.innerHTML = `
         <div class="row">
-            ${Object.entries(accounts).map(([key, account]) => `
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0">${account.name}</h5>
-                        </div>
-                        <div class="card-body">
-                            ${renderAccountNode(account, key)}
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="accountsTree">
+                            <!-- الأصول -->
+                            <div class="account-group mb-4">
+                                <h3>الأصول</h3>
+                                
+                                <!-- الأصول المتداولة -->
+                                <div class="account-subgroup ms-4 mb-3">
+                                    <h4>الأصول المتداولة</h4>
+                                    <div class="account-item ms-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>نقدية</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>عملاء</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>استثمارات قصيرة الأجل</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>مخزون</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- الأصول غير المتداولة -->
+                                <div class="account-subgroup ms-4">
+                                    <h4>الأصول غير المتداولة</h4>
+                                    <div class="account-item ms-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>استثمارات طويلة الأجل</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>أصول غير ملموسة</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- الخصوم والالتزامات -->
+                            <div class="account-group mb-4">
+                                <h3>الخصوم والالتزامات</h3>
+                                
+                                <!-- خصوم طويلة الأجل -->
+                                <div class="account-subgroup ms-4 mb-3">
+                                    <h4>خصوم طويلة الأجل</h4>
+                                    <div class="account-item ms-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>قروض طويلة الأجل</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>التزامات ضريبية مؤجلة</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>التزامات التقاعد</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- التزامات متداولة قصيرة الأجل -->
+                                <div class="account-subgroup ms-4">
+                                    <h4>التزامات متداولة قصيرة الأجل</h4>
+                                    <div class="account-item ms-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>قروض قصيرة الأجل</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>رواتب وأجور الموظفين</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>الموردين والدائنين</span>
+                                            <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- حقوق الملكية -->
+                            <div class="account-group mb-4">
+                                <h3>حقوق الملكية</h3>
+                                <div class="account-item ms-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>رأس المال والتغيرات</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>الاحتياطات النقدية</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>الأرباح المحتجزة</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- الإيرادات -->
+                            <div class="account-group mb-4">
+                                <h3>الإيرادات</h3>
+                                <div class="account-item ms-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>إيرادات المبيعات</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>إيرادات متنوعة</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- المصروفات -->
+                            <div class="account-group">
+                                <h3>المصروفات</h3>
+                                <div class="account-item ms-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>مصروفات إدارية</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>مصروفات تشغيلية</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>مصروفات بيعية</span>
+                                        <input type="number" class="form-control form-control-sm w-25" placeholder="القيمة">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            `).join('')}
-        </div>
-    `;
-}
+            </div>
 
-function renderAccountNode(account, key, level = 0) {
-    const padding = level * 20;
-    let html = `
-        <div class="account-node" data-account-key="${key}" style="padding-right: ${padding}px">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                    <span class="badge bg-secondary me-2">${account.code}</span>
-                    <span>${account.name}</span>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>الإجماليات</h4>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label">إجمالي الأصول</label>
+                            <h5 id="totalAssets">0</h5>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">إجمالي الخصوم</label>
+                            <h5 id="totalLiabilities">0</h5>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">إجمالي حقوق الملكية</label>
+                            <h5 id="totalEquity">0</h5>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">إجمالي الإيرادات</label>
+                            <h5 id="totalRevenue">0</h5>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">إجمالي المصروفات</label>
+                            <h5 id="totalExpenses">0</h5>
+                        </div>
+                        <hr>
+                        <div>
+                            <label class="form-label">صافي الربح</label>
+                            <h4 id="netIncome">0</h4>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span class="badge bg-info">${utils.formatCurrency(account.balance)}</span>
-                    <button class="btn btn-sm btn-outline-primary ms-2" onclick="addSubAccount('${key}')">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteAccount('${key}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h4>الإجراءات</h4>
+                        <hr>
+                        <button class="btn btn-primary w-100 mb-2" onclick="saveAccountsData()">حفظ التغييرات</button>
+                        <button class="btn btn-success w-100 mb-2" onclick="exportAccountsToExcel()">تصدير إلى Excel</button>
+                        <button class="btn btn-info w-100" onclick="printAccountsTree()">طباعة شجرة الحسابات</button>
+                    </div>
                 </div>
             </div>
         </div>
     `;
 
-    if (account.children) {
-        Object.entries(account.children).forEach(([childKey, childAccount]) => {
-            html += renderAccountNode(childAccount, `${key}.${childKey}`, level + 1);
-        });
-    }
-
-    return html;
+    // Initialize event listeners
+    initializeAccountsListeners();
+    loadAccountsData();
 }
 
-function addSubAccount(parentKey) {
-    const accounts = utils.getFromStorage(CONFIG.STORAGE_KEYS.ACCOUNTS);
-    const parentAccount = getAccountByKey(accounts, parentKey);
-    
-    if (!parentAccount) return;
-
-    const newAccountCode = generateNextCode(parentAccount);
-    const newAccountKey = `subAccount${Date.now()}`;
-    
-    const newAccount = {
-        name: 'حساب جديد',
-        code: newAccountCode,
-        balance: 0,
-        children: {}
-    };
-
-    if (!parentAccount.children) {
-        parentAccount.children = {};
-    }
-    parentAccount.children[newAccountKey] = newAccount;
-
-    utils.saveToStorage(CONFIG.STORAGE_KEYS.ACCOUNTS, accounts);
-    displayAccountsTree(accounts);
-}
-
-function deleteAccount(accountKey) {
-    if (!confirm('هل أنت متأكد من حذف هذا الحساب وجميع الحسابات الفرعية؟')) return;
-
-    const accounts = utils.getFromStorage(CONFIG.STORAGE_KEYS.ACCOUNTS);
-    const keyParts = accountKey.split('.');
-    let current = accounts;
-    
-    for (let i = 0; i < keyParts.length - 1; i++) {
-        current = current[keyParts[i]].children;
-    }
-    
-    delete current[keyParts[keyParts.length - 1]];
-    
-    utils.saveToStorage(CONFIG.STORAGE_KEYS.ACCOUNTS, accounts);
-    displayAccountsTree(accounts);
-}
-
-function generateNextCode(parentAccount) {
-    const parentCode = parentAccount.code;
-    const siblingCodes = Object.values(parentAccount.children || {})
-        .map(child => parseInt(child.code))
-        .filter(code => !isNaN(code));
-    
-    const maxCode = Math.max(0, ...siblingCodes);
-    return `${parentCode}${(maxCode + 1).toString().padStart(2, '0')}`;
-}
-
-function getAccountByKey(accounts, key) {
-    const keyParts = key.split('.');
-    let current = accounts;
-    
-    for (const part of keyParts) {
-        if (!current[part]) return null;
-        current = current[part];
-    }
-    
-    return current;
-}
-
-function setupAccountListeners() {
-    // Add event listeners for account operations
-    document.addEventListener('click', function(e) {
-        if (e.target.matches('.edit-account')) {
-            const accountKey = e.target.closest('.account-node').dataset.accountKey;
-            editAccount(accountKey);
-        }
+function initializeAccountsListeners() {
+    // Add event listeners for all input fields to update totals
+    document.querySelectorAll('#accountsTree input').forEach(input => {
+        input.addEventListener('input', updateTotals);
     });
 }
 
-function editAccount(accountKey) {
-    const accounts = utils.getFromStorage(CONFIG.STORAGE_KEYS.ACCOUNTS);
-    const account = getAccountByKey(accounts, accountKey);
-    
-    if (!account) return;
+function updateTotals() {
+    // Calculate totals for each section
+    const totalAssets = calculateSectionTotal('الأصول');
+    const totalLiabilities = calculateSectionTotal('الخصوم والالتزامات');
+    const totalEquity = calculateSectionTotal('حقوق الملكية');
+    const totalRevenue = calculateSectionTotal('الإيرادات');
+    const totalExpenses = calculateSectionTotal('المصروفات');
 
-    // Show edit modal
-    const modal = new bootstrap.Modal(document.getElementById('editAccountModal'));
-    const form = document.getElementById('editAccountForm');
+    // Update the display
+    document.getElementById('totalAssets').textContent = utils.formatCurrency(totalAssets);
+    document.getElementById('totalLiabilities').textContent = utils.formatCurrency(totalLiabilities);
+    document.getElementById('totalEquity').textContent = utils.formatCurrency(totalEquity);
+    document.getElementById('totalRevenue').textContent = utils.formatCurrency(totalRevenue);
+    document.getElementById('totalExpenses').textContent = utils.formatCurrency(totalExpenses);
+
+    // Calculate and update net income
+    const netIncome = totalRevenue - totalExpenses;
+    document.getElementById('netIncome').textContent = utils.formatCurrency(netIncome);
+}
+
+function calculateSectionTotal(sectionTitle) {
+    let total = 0;
+    const section = Array.from(document.querySelectorAll('.account-group')).find(group => 
+        group.querySelector('h3').textContent === sectionTitle
+    );
     
-    form.elements.accountName.value = account.name;
-    form.elements.accountCode.value = account.code;
+    if (section) {
+        section.querySelectorAll('input').forEach(input => {
+            total += Number(input.value) || 0;
+        });
+    }
     
-    form.onsubmit = function(e) {
-        e.preventDefault();
+    return total;
+}
+
+function saveAccountsData() {
+    const accountsData = {};
+    document.querySelectorAll('#accountsTree .account-item').forEach(item => {
+        const category = item.closest('.account-group').querySelector('h3').textContent;
+        const subcategory = item.closest('.account-subgroup')?.querySelector('h4')?.textContent;
         
-        account.name = form.elements.accountName.value;
-        account.code = form.elements.accountCode.value;
-        
-        utils.saveToStorage(CONFIG.STORAGE_KEYS.ACCOUNTS, accounts);
-        displayAccountsTree(accounts);
-        modal.hide();
-    };
+        item.querySelectorAll('.d-flex').forEach(row => {
+            const accountName = row.querySelector('span').textContent;
+            const value = row.querySelector('input').value || 0;
+            
+            if (!accountsData[category]) {
+                accountsData[category] = {};
+            }
+            
+            if (subcategory) {
+                if (!accountsData[category][subcategory]) {
+                    accountsData[category][subcategory] = {};
+                }
+                accountsData[category][subcategory][accountName] = Number(value);
+            } else {
+                accountsData[category][accountName] = Number(value);
+            }
+        });
+    });
+
+    utils.saveToStorage('accountsData', accountsData);
+    utils.showAlert('success', 'تم حفظ البيانات بنجاح');
+}
+
+function loadAccountsData() {
+    const accountsData = utils.getFromStorage('accountsData');
+    if (!accountsData) return;
+
+    // Populate the form with saved data
+    Object.entries(accountsData).forEach(([category, data]) => {
+        Object.entries(data).forEach(([key, value]) => {
+            if (typeof value === 'object') {
+                // Handle subcategories
+                Object.entries(value).forEach(([accountName, amount]) => {
+                    const input = findAccountInput(category, key, accountName);
+                    if (input) input.value = amount;
+                });
+            } else {
+                // Handle direct accounts
+                const input = findAccountInput(category, null, key);
+                if (input) input.value = value;
+            }
+        });
+    });
+
+    // Update totals after loading data
+    updateTotals();
+}
+
+function findAccountInput(category, subcategory, accountName) {
+    const categorySection = Array.from(document.querySelectorAll('.account-group')).find(group => 
+        group.querySelector('h3').textContent === category
+    );
     
-    modal.show();
+    if (!categorySection) return null;
+
+    if (subcategory) {
+        const subcategorySection = Array.from(categorySection.querySelectorAll('.account-subgroup')).find(subgroup => 
+            subgroup.querySelector('h4').textContent === subcategory
+        );
+        
+        if (!subcategorySection) return null;
+
+        return Array.from(subcategorySection.querySelectorAll('.d-flex')).find(row => 
+            row.querySelector('span').textContent === accountName
+        )?.querySelector('input');
+    } else {
+        return Array.from(categorySection.querySelectorAll('.d-flex')).find(row => 
+            row.querySelector('span').textContent === accountName
+        )?.querySelector('input');
+    }
+}
+
+function exportAccountsToExcel() {
+    const accountsData = [];
+    
+    // Add headers
+    accountsData.push(['الحساب', 'القيمة']);
+    
+    // Add data rows
+    document.querySelectorAll('#accountsTree .account-group').forEach(group => {
+        const category = group.querySelector('h3').textContent;
+        accountsData.push([category, '']);
+        
+        group.querySelectorAll('.account-subgroup').forEach(subgroup => {
+            const subcategory = subgroup.querySelector('h4').textContent;
+            accountsData.push(['  ' + subcategory, '']);
+            
+            subgroup.querySelectorAll('.d-flex').forEach(row => {
+                const accountName = row.querySelector('span').textContent;
+                const value = row.querySelector('input').value || '0';
+                accountsData.push(['    ' + accountName, value]);
+            });
+        });
+        
+        group.querySelectorAll('.account-item').forEach(item => {
+            if (!item.closest('.account-subgroup')) {
+                item.querySelectorAll('.d-flex').forEach(row => {
+                    const accountName = row.querySelector('span').textContent;
+                    const value = row.querySelector('input').value || '0';
+                    accountsData.push(['  ' + accountName, value]);
+                });
+            }
+        });
+    });
+    
+    // Convert to CSV
+    const csv = accountsData.map(row => row.join(',')).join('\n');
+    
+    // Download file
+    utils.exportToCSV(csv, 'شجرة_الحسابات.csv');
+}
+
+function printAccountsTree() {
+    const printContent = document.getElementById('accountsTree').cloneNode(true);
+    
+    // Remove input fields and replace with span elements
+    printContent.querySelectorAll('input').forEach(input => {
+        const span = document.createElement('span');
+        span.textContent = utils.formatCurrency(Number(input.value) || 0);
+        input.parentNode.replaceChild(span, input);
+    });
+    
+    // Print the content
+    utils.printElement(printContent);
 }
 
 // Initialize accounts on page load
