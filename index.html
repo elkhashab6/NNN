@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <base href="." />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>النظام المحاسبي المتكامل</title>
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -25,8 +26,11 @@
                     <a href="#inventory" class="nav-link" onclick="showPage('inventory')">
                         <i class="fas fa-boxes me-2"></i>المخزون
                     </a>
-                    <a href="#reports" class="nav-link" onclick="showPage('reports')">
-                        <i class="fas fa-chart-bar me-2"></i>التقارير
+                    <a href="#customers" class="nav-link" onclick="showPage('customers')">
+                        <i class="fas fa-users me-2"></i>العملاء
+                    </a>
+                    <a href="#suppliers" class="nav-link" onclick="showPage('suppliers')">
+                        <i class="fas fa-truck me-2"></i>الموردين
                     </a>
                     <a href="#accounts" class="nav-link" onclick="showPage('accounts')">
                         <i class="fas fa-sitemap me-2"></i>شجرة الحسابات
@@ -49,6 +53,9 @@
                     <a href="#debts" class="nav-link" onclick="showPage('debts')">
                         <i class="fas fa-hand-holding-usd me-2"></i>الديون والمستحقات
                     </a>
+                    <a href="#reports" class="nav-link" onclick="showPage('reports')">
+                        <i class="fas fa-chart-bar me-2"></i>التقارير
+                    </a>
                     <a href="#settings" class="nav-link" onclick="showPage('settings')">
                         <i class="fas fa-cog me-2"></i>الإعدادات
                     </a>
@@ -57,11 +64,11 @@
 
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 main-content">
-                <!-- Pages will be loaded here -->
                 <div id="dashboard" class="page active"></div>
                 <div id="invoices" class="page"></div>
                 <div id="inventory" class="page"></div>
-                <div id="reports" class="page"></div>
+                <div id="customers" class="page"></div>
+                <div id="suppliers" class="page"></div>
                 <div id="accounts" class="page"></div>
                 <div id="financial" class="page"></div>
                 <div id="payroll" class="page"></div>
@@ -69,36 +76,43 @@
                 <div id="budget" class="page"></div>
                 <div id="costs" class="page"></div>
                 <div id="debts" class="page"></div>
+                <div id="reports" class="page"></div>
                 <div id="settings" class="page"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Modals Container -->
     <div id="modalsContainer"></div>
 
-    <!-- Scripts -->
+    <!-- Core Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Application Scripts -->
+
+    <!-- Utility Scripts -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
+
+    <!-- Core Features -->
     <script src="js/charts.js"></script>
+    <script src="js/accounts.js"></script>
     <script src="js/invoices.js"></script>
     <script src="js/inventory.js"></script>
     <script src="js/customers.js"></script>
     <script src="js/suppliers.js"></script>
-    <script src="js/reports.js"></script>
-    <script src="js/settings.js"></script>
-    <script src="js/accounts.js"></script>
+
+    <!-- Additional Features -->
     <script src="js/financial.js"></script>
-    <script src="js/backup.js"></script>
     <script src="js/payroll.js"></script>
     <script src="js/assets.js"></script>
     <script src="js/budget.js"></script>
     <script src="js/costs.js"></script>
     <script src="js/debts.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/backup.js"></script>
+
+    <!-- Settings and Main -->
+    <script src="js/settings.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
